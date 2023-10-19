@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 조회</title>
+</head>
+<body>
+    <h1>게시글 조회</h1>
+    <form action="/board/delete" method="POST" id="form">
+        <input type="hidden" name="boardNo" th:value="${board.boardNo}">            <!-- hidden으로 설정해준 이유 -->
+        <table>
+            <tr>
+                <td>제목</td>
+                <td>
+                    <input type="text" name="title" th:value="${board.title}">
+                </td>
+            </tr>
+            <tr>
+                <td>작성자</td>
+                <td>
+                    <input type="text" name="writer" th:value="${board.writer}">
+                </td>
+            </tr>
+            <tr>
+                <td>내용</td>
+                <td>
+                    <textarea name="content" cols="40" rows="5" th:text="${board.content}"></textarea>
+                </td>
+            </tr>
+        </table>
+        <div>
+            <button type="button" onclick="moveList()">목록</button>
+            <button type="button" onclick="moveUpdate()">수정</button>
+            <button type="button" onclick="actionDelete()">삭제</button>
+        </div>
+    </form>
+
+    <script>
+        let form = document.getElementById('form')
+        // 👩‍💻 모델 객체를 자바스크립트에서 표현하는 방법
+        let boardNo = "[[${board.boardNo}]]"
+        let btnFileDalete = document.querySelectorAll(".btn-file-delete")
+
+        //파일 삭제 버튼 클릭 이벤트
+        for (let i = 0 ; i < btnFileDalete.length ; i++) {
+            btnFileDalete[i].addEventListener('click', function() {
+                let btn = this
+                let fileNo = this.getAttribute('data')
+
+                let data = {
+                    fileNo : fileNo
+                }
+
+                let request = new XMLHttpRequest()
+
+                request.open('DELETE', '/file', true)
+                request.send(data)
+
+                request.onreadystatechange = function() {
+                    // 요청 성공 시,
+                    if (request.readyState == request.DONE && request.status == 200 ) {
+                        console.log('파일 삭제 성공')
+                        // 파일 항목 제거
+                        btn.parentNode.remove()
+                    }
+                }
+            })
+        }
+        
+        // 목록으로 이동
+        function moveList() {
+            location.href = "/board/list"
+        }
+
+        // 수정으로 이동
+        function moveUpdate() {
+            location.href = "/board/update?boardNo=" + boardNo
+        }
+
+        // 삭제 요청
+        function actionDelete() {
+            let check = confirm('정말로 삭제하시겠습니까?')
+            if( check )
+                form.submit()
+        }
+
+    </script>
+</body>
+</html>

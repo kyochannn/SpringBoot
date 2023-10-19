@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>게시글 목록</title>
+</head>
+<body>
+    <h1>게시글 목록</h1>
+
+    <a href="/board/insert">글쓰기</a>
+
+    <table border="1">
+        <tr>
+            <th width="50">번호</th>
+            <th width="300">제목</th>
+            <th width="100">작성자</th>
+            <th width="200">등록일자</th>
+            <th width="200">수정일자</th>
+            <th width="100">조회수</th>
+        </tr>
+        <!--
+            타임리프 기본 문법 키워드
+            th:????
+            
+            👩‍💻 텍스트 출력
+            * th:text="${변수}"
+            - 변수 :  th:text="${message}"
+            - 객체 :  th:text="${board.title}"
+
+            👩‍💻 반복문
+            * th:each="객체명 : ${컬렉션명}"
+            - th:each="board : ${boardList}"
+        -->
+        <tr th:each="board : ${boardList}">
+            <td align="center" th:text="${board.boardNo}"></td>
+            <td>
+                <!-- |문자열+${표현식}| -->
+                <!-- 표현식을 사용해 주기 위해서 위와같이 파이프를 사용해 설정해준다.-->
+                <!-- http://localhost:8080/board/read?boardNo=${board.boardNo} -->
+                <!-- 변경 후 -->
+                <!-- http://localhost:8080/board/read?boardNo=2 -->
+                <a th:href="|/board/read?boardNo=${board.boardNo}|" th:text="${board.title}"></a>
+            </td>
+            <td align="center" th:text="${board.writer}"></td>
+            <!-- 타임리프 date 포맷 -->
+            <!--
+                👩‍💻 #유틸리티객체.메소드() 
+                #dates.format( 날짜객체명, '날짜포맷' )
+                - #dates.format( board.regDate, 'yyyy-MM-dd HH:mm:ss' )
+            -->
+            <td align="center">
+                <span th:text="${ #dates.format( board.regDate, 'yyyy-MM-dd HH:mm:ss') }"></span>
+            </td>
+            <td align="center">
+                <span th:text="${ #dates.format( board.updDate, 'yyyy-MM-dd HH:mm:ss') }"></span>
+            </td>
+            <td align="center" th:text="${board.views}"></td>
+        </tr>
+    </table>
+</body>
+</html>
